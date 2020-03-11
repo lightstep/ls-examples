@@ -10,7 +10,6 @@ export SECRET_TOKEN=<lightstep access token>
 LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
 LIGHTSTEP_COMPONENT_NAME=demo-client-go \
 LIGHTSTEP_SERVICE_VERSION=0.1.8 \
-LIGHTSTEP_SECURE=0 \
 go run server.go
 ```
 
@@ -19,7 +18,6 @@ go run server.go
 LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
 LIGHTSTEP_COMPONENT_NAME=demo-client-go \
 LIGHTSTEP_SERVICE_VERSION=0.1.8 \
-LIGHTSTEP_SECURE=0 \
 go run client.go
 ```
 
