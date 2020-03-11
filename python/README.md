@@ -3,7 +3,7 @@
 
 ## Install ls-trace-py
 ```bash
-pip install git+https://github.com/lightstep/ls-trace-py.git@codeboten/codeboten/metricsingest
+pip install git+https://github.com/lightstep/ls-trace-py.git@codeboten/metricsingest
 ```
 ## Export your access token
 ```bash
