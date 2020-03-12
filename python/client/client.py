@@ -7,13 +7,15 @@
 #   LIGHTSTEP_SERVICE_VERSION=0.0.8 \
 #   ls-trace-run python client.py
 
+import os
 import random
 import requests
 import time
 
 if __name__ == "__main__":
+    target = os.getenv("TARGET_URL", "http://localhost:8081")
     while True:
-        url = f"http://localhost:8081/content/{random.randint(1,1024)}"
+        url = f"{target}/content/{random.randint(1,1024)}"
         try:
             res = requests.get(url)
             print(f"Request to {url}, got {len(res.content)} bytes")

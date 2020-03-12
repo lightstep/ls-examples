@@ -65,13 +65,23 @@ func initLightstepTracer() {
 	if lsSecure == "0" {
 		plaintext = true
 	}
+
+	componentName := os.Getenv("LIGHTSTEP_COMPONENT_NAME")
+	if len(componentName) == 0 {
+		componentName = "test-go-server"
+	}
+	serviceVersion := os.Getenv("LIGHTSTEP_SERVICE_VERSION")
+	if len(serviceVersion) == 0 {
+		serviceVersion = "0.0.0"
+	}
 	endpoint := lightstep.Endpoint{Host: lsHost, Port: port, Plaintext: plaintext}
 	opentracing.InitGlobalTracer(lightstep.NewTracer(lightstep.Options{
 		AccessToken: lsToken,
 		Collector:   endpoint,
 		UseHttp:     true,
 		Tags: opentracing.Tags{
-			"lightstep.component_name": "test-app-go",
+			"lightstep.component_name": componentName,
+			"service.version":          serviceVersion,
 		},
 		SystemMetrics: lightstep.SystemMetricsOptions{
 			Endpoint: endpoint,
