@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+    go-server:
+        container_name: go-server
+        build: ./go/server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-server-go
+            - LIGHTSTEP_SERVICE_VERSION=5
+    go-client:
+        container_name: go-client
+        build: ./go/client
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-go
+            - LIGHTSTEP_SERVICE_VERSION=1.2.4
+            - TARGET_URL=http://go-server:8081
+    py-client:
+        container_name: py-client
+        build: ./python/client
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-py
+            - LIGHTSTEP_SERVICE_VERSION=0.1.1
+            - TARGET_URL=http://go-server:8081
+
+networks:
+  demo:
