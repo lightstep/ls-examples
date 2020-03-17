@@ -10,12 +10,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"math/rand"
+	mathrand "math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"crypto/rand"
+	"crypto/rsa"
 
 	"github.com/lightstep/lightstep-tracer-go"
 	"github.com/opentracing/opentracing-go"
@@ -38,7 +42,7 @@ func initLightstepTracer() {
 	}
 	componentName := os.Getenv("LIGHTSTEP_COMPONENT_NAME")
 	if len(componentName) == 0 {
-		componentName = "test-go-server"
+		componentName = "test-go-client"
 	}
 	serviceVersion := os.Getenv("LIGHTSTEP_SERVICE_VERSION")
 	if len(serviceVersion) == 0 {
@@ -59,20 +63,37 @@ func initLightstepTracer() {
 	}))
 }
 
+func genKey() {
+	reader := rand.Reader
+	bitSize := 4096
+
+	rsa.GenerateKey(reader, bitSize)
+}
+
+func makeRequest() {
+	trivialSpan, _ := opentracing.StartSpanFromContext(context.Background(), "makeRequest")
+	defer trivialSpan.Finish()
+
+	contentLength := mathrand.Intn(2048)
+	url := fmt.Sprintf("%s/content/%d", targetURL, contentLength)
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("Request to %s, got %d bytes\n", url, res.ContentLength)
+	}
+	for i := 1; i <= 4; i++ {
+		genKey()
+	}
+}
+
 func main() {
 	initLightstepTracer()
 	if len(targetURL) == 0 {
 		targetURL = "http://localhost:8081"
 	}
 	for {
-		contentLength := rand.Intn(2048)
-		url := fmt.Sprintf("%s/content/%d", targetURL, contentLength)
-		res, err := http.Get(url)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Printf("Request to %s, got %d bytes\n", url, res.ContentLength)
-		}
+		makeRequest()
 		time.Sleep(1 * time.Second)
 	}
 
