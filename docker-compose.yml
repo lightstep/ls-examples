@@ -42,6 +42,24 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=demo-server-py
             - LIGHTSTEP_SERVICE_VERSION=0.2.2
-
+    js-server:
+        container_name: js-server
+        build: ./js/server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-server
+    js-client:
+        container_name: js-client
+        build: ./js/client
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-client
+            - TARGET_URL=http://js-server:8080/ping
 networks:
-  demo:
+    demo:
