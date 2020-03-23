@@ -12,6 +12,19 @@ import random
 import requests
 import time
 
+from ddtrace import tracer
+from ddtrace.propagation.b3 import B3HTTPPropagator
+
+
+tracer.configure(http_propagator=B3HTTPPropagator)
+tracer.set_tags(
+    {
+        "lightstep.service_name": os.getenv("LIGHTSTEP_COMPONENT_NAME"),
+        "service.version": os.getenv("LIGHTSTEP_SERVICE_VERSION"),
+        "lightstep.access_token": os.getenv("SECRET_ACCESS_TOKEN"),
+    }
+)
+
 if __name__ == "__main__":
     target = os.getenv("TARGET_URL", "http://localhost:8081")
     while True:

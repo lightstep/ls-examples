@@ -1,6 +1,20 @@
 #!/usr/bin/env python
+import os
 import random
 import string
+
+from ddtrace import tracer
+from ddtrace.propagation.b3 import B3HTTPPropagator
+
+tracer.configure(http_propagator=B3HTTPPropagator)
+tracer.set_tags(
+    {
+        "lightstep.service_name": os.getenv("LIGHTSTEP_COMPONENT_NAME"),
+        "service.version": os.getenv("LIGHTSTEP_SERVICE_VERSION"),
+        "lightstep.access_token": os.getenv("SECRET_ACCESS_TOKEN"),
+    }
+)
+
 
 from flask import Flask
 app = Flask(__name__)
