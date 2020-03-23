@@ -14,6 +14,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -25,9 +26,7 @@ import (
 )
 
 var lsToken = os.Getenv("LIGHTSTEP_ACCESS_TOKEN")
-var lsHost = os.Getenv("LIGHTSTEP_HOST")
-var lsPort = os.Getenv("LIGHTSTEP_PORT")
-var lsSecure = os.Getenv("LIGHTSTEP_SECURE")
+var lsMetricsURL = os.Getenv("LS_METRICS_URL")
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const (
@@ -57,13 +56,18 @@ func randString(n int) string {
 }
 
 func initLightstepTracer() {
-	port, err := strconv.Atoi(lsPort)
-	if err != nil {
-		port = 8360
-	}
+	u, err := url.Parse(lsMetricsURL)
+
+	host := "ingest.lightstep.com"
+	port := 443
 	plaintext := false
-	if lsSecure == "0" {
-		plaintext = true
+
+	if err == nil {
+		host = u.Hostname()
+		port, _ = strconv.Atoi(u.Port())
+		if u.Scheme == "http" {
+			plaintext = true
+		}
 	}
 
 	componentName := os.Getenv("LIGHTSTEP_COMPONENT_NAME")
@@ -74,7 +78,7 @@ func initLightstepTracer() {
 	if len(serviceVersion) == 0 {
 		serviceVersion = "0.0.0"
 	}
-	endpoint := lightstep.Endpoint{Host: lsHost, Port: port, Plaintext: plaintext}
+	endpoint := lightstep.Endpoint{Host: host, Port: port, Plaintext: plaintext}
 	opentracing.InitGlobalTracer(lightstep.NewTracer(lightstep.Options{
 		AccessToken: lsToken,
 		Collector:   endpoint,

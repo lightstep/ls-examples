@@ -14,32 +14,34 @@ import (
 	"fmt"
 	mathrand "math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
-
-	"crypto/rand"
-	"crypto/rsa"
 
 	"github.com/lightstep/lightstep-tracer-go"
 	"github.com/opentracing/opentracing-go"
 )
 
 var lsToken = os.Getenv("LIGHTSTEP_ACCESS_TOKEN")
-var lsHost = os.Getenv("LIGHTSTEP_HOST")
-var lsPort = os.Getenv("LIGHTSTEP_PORT")
-var lsSecure = os.Getenv("LIGHTSTEP_SECURE")
+var lsMetricsURL = os.Getenv("LS_METRICS_URL")
 var targetURL = os.Getenv("TARGET_URL")
 
 func initLightstepTracer() {
-	port, err := strconv.Atoi(lsPort)
-	if err != nil {
-		port = 8360
-	}
+	u, err := url.Parse(lsMetricsURL)
+
+	host := "ingest.lightstep.com"
+	port := 443
 	plaintext := false
-	if lsSecure == "0" {
-		plaintext = true
+
+	if err == nil {
+		host = u.Hostname()
+		port, _ = strconv.Atoi(u.Port())
+		if u.Scheme == "http" {
+			plaintext = true
+		}
 	}
+
 	componentName := os.Getenv("LIGHTSTEP_COMPONENT_NAME")
 	if len(componentName) == 0 {
 		componentName = "test-go-client"
@@ -48,7 +50,7 @@ func initLightstepTracer() {
 	if len(serviceVersion) == 0 {
 		serviceVersion = "0.0.0"
 	}
-	endpoint := lightstep.Endpoint{Host: lsHost, Port: port, Plaintext: plaintext}
+	endpoint := lightstep.Endpoint{Host: host, Port: port, Plaintext: plaintext}
 	opentracing.InitGlobalTracer(lightstep.NewTracer(lightstep.Options{
 		AccessToken: lsToken,
 		Collector:   endpoint,
@@ -63,13 +65,6 @@ func initLightstepTracer() {
 	}))
 }
 
-func genKey() {
-	reader := rand.Reader
-	bitSize := 4096
-
-	rsa.GenerateKey(reader, bitSize)
-}
-
 func makeRequest() {
 	trivialSpan, _ := opentracing.StartSpanFromContext(context.Background(), "makeRequest")
 	defer trivialSpan.Finish()
@@ -79,12 +74,10 @@ func makeRequest() {
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		fmt.Printf("Request to %s, got %d bytes\n", url, res.ContentLength)
+		return
 	}
-	for i := 1; i <= 4; i++ {
-		genKey()
-	}
+	defer res.Body.Close()
+	fmt.Printf("Request to %s, got %d bytes\n", url, res.ContentLength)
 }
 
 func main() {
