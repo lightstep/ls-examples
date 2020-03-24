@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ls-trace": "github:lightstep/ls-trace-js#39cf1bd"
+    "ls-trace": "github:lightstep/ls-trace-js#9401f6b"
   }
 }
