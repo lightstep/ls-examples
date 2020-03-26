@@ -2,7 +2,7 @@
 # example code to test ls-trace-py
 #
 # usage:
-#   LIGHTSTEP_ACCESS_TOKEN=${SECRET_ACCESS_TOKEN} \
+#   LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
 #   LIGHTSTEP_COMPONENT_NAME=demo-python \
 #   LIGHTSTEP_SERVICE_VERSION=0.0.8 \
 #   ls-trace-run python client.py
@@ -21,7 +21,7 @@ tracer.set_tags(
     {
         "lightstep.service_name": os.getenv("LIGHTSTEP_COMPONENT_NAME"),
         "service.version": os.getenv("LIGHTSTEP_SERVICE_VERSION"),
-        "lightstep.access_token": os.getenv("SECRET_ACCESS_TOKEN"),
+        "lightstep.access_token": os.getenv("LIGHTSTEP_ACCESS_TOKEN"),
     }
 )
 

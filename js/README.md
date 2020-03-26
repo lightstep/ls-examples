@@ -5,7 +5,7 @@
 Export or add to a .env file
 
 ```bash
-export SECRET_ACCESS_TOKEN=<lightstep access token>
+export LIGHTSTEP_ACCESS_TOKEN=<lightstep access token>
 export DD_TRACE_AGENT_URL=https://ingest.lightstep.com
 ```
 
@@ -25,7 +25,7 @@ docker-compose up
 
 | Name                     | Required | Default                              |
 | ------------------------ | -------- | ------------------------------------ |
-| SECRET_ACCESS_TOKEN      | yes      |
+| LIGHTSTEP_ACCESS_TOKEN   | yes      |
 | LIGHTSTEP_COMPONENT_NAME | yes      |                                      |
 | DD_TRACE_AGENT_URL       | yes      |
 | LS_METRICS_URL           | No       | https://ingest.lightstep.com/metrics |

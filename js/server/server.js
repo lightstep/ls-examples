@@ -1,7 +1,7 @@
 'use strict';
 
 const PORT = process.env.PORT || 8080;
-const ACCESS_TOKEN = process.env.SECRET_ACCESS_TOKEN;
+const ACCESS_TOKEN = process.env.LIGHTSTEP_ACCESS_TOKEN;
 const COMPONENT_NAME =
   process.env.LIGHTSTEP_COMPONENT_NAME || 'ls-trace-js-server';
 const SERVICE_VERSION = process.env.LIGHTSTEP_SERVICE_VERSION || '0.0.1';
