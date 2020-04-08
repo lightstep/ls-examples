@@ -67,5 +67,29 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-client
             - TARGET_URL=http://js-server:8080/ping
+    java-server:
+        container_name: java-server
+        build: ./java/server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-server-java
+            - LIGHTSTEP_SERVICE_VERSION=4.3.2
+    java-client:
+        container_name: java-client
+        build: ./java/client
+        networks:
+            - demo
+        depends_on:
+            - java-server
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-java
+            - LIGHTSTEP_SERVICE_VERSION=3.2.1
+            - TARGET_URL=http://java-server:8083
+
 networks:
     demo:
