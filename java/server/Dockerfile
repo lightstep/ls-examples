@@ -1,7 +1,7 @@
 FROM openjdk:8-jre-alpine
 
 ADD target/server-1.0-SNAPSHOT.jar /app/
-RUN wget -O /app/opentracing-specialagent-1.7.0.jar https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.0/opentracing-specialagent-1.7.0.jar
+ADD opentracing-specialagent-1.7.0.jar /app/
 
 ENTRYPOINT java -javaagent:/app/opentracing-specialagent-1.7.0.jar  \
         -Dsa.tracer=lightstep \

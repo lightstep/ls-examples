@@ -3,4 +3,5 @@
 node_modules/
 target
 dependency-reduced-pom.xml
+*.jar
 .swp
