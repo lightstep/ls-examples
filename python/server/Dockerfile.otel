@@ -1,4 +1,8 @@
 FROM python:3.7
-RUN pip install flask opentelemetry-api opentelemetry-auto-instrumentation opentelemetry-ext-flask opentelemetry-ext-lightstep
+RUN pip install flask redis pymongo sqlalchemy
+RUN pip install opentelemetry-api \
+    opentelemetry-auto-instrumentation \
+    opentelemetry-ext-flask \
+    opentelemetry-ext-lightstep
 ADD server.py /app/server.py
 CMD ["opentelemetry-auto-instrumentation", "/app/server.py"]

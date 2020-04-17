@@ -50,9 +50,10 @@ else:
     )
 
 if __name__ == "__main__":
+    integrations = ["pymongo", "redis", "sqlalchemy"]
     target = os.getenv("TARGET_URL", "http://localhost:8081")
     while True:
-        url = f"{target}/content/{random.randint(1,1024)}"
+        url = f"{target}/{integrations[random.randint(0,len(integrations)-1)]}/{random.randint(1,1024)}"
         try:
             res = requests.get(url)
             print(f"Request to {url}, got {len(res.content)} bytes")
