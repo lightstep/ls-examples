@@ -36,6 +36,22 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=demo-client-py
             - LIGHTSTEP_SERVICE_VERSION=1.2.1
             - TARGET_URL=http://py-server:5000
+    py-otel-client:
+        container_name: py-otel-client
+        build:
+            context: ./python/client
+            dockerfile: Dockerfile.otel
+        networks:
+            - demo
+        depends_on:
+            - py-otel-server
+        env_file:
+            - .env
+        environment:
+            - OPENTELEMETRY_INSTRUMENTATION=1
+            - LIGHTSTEP_SERVICE_NAME=demo-otel-client-py
+            - LIGHTSTEP_SERVICE_VERSION=1.2.6
+            - TARGET_URL=http://py-otel-server:5000
     py-server:
         container_name: py-server
         build: ./python/server
@@ -46,6 +62,19 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=demo-server-py
             - LIGHTSTEP_SERVICE_VERSION=0.2.2
+    py-otel-server:
+        container_name: py-otel-server
+        build:
+            context: ./python/server
+            dockerfile: Dockerfile.otel
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - OPENTELEMETRY_INSTRUMENTATION=1
+            - LIGHTSTEP_SERVICE_NAME=demo-otel-server-py
+            - LIGHTSTEP_SERVICE_VERSION=0.2.7
     js-server:
         container_name: js-server
         build: ./js/server
