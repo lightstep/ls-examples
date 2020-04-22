@@ -1,28 +1,28 @@
 version: "3.7"
 services:
-    go-server:
-        container_name: go-server
-        build: ./go/server
+    go-server-opentracing:
+        container_name: go-server-opentracing
+        build: ./go/opentracing/server
         networks:
             - demo
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-server-go
+            - LIGHTSTEP_COMPONENT_NAME=demo-server-go-opentracing
             - LIGHTSTEP_SERVICE_VERSION=5
-    go-client:
-        container_name: go-client
-        build: ./go/client
+    go-client-opentracing:
+        container_name: go-client-opentracing
+        build: ./go/opentracing/client
         networks:
             - demo
         depends_on:
-            - go-server
+            - go-server-opentracing
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-client-go
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-go-opentracing
             - LIGHTSTEP_SERVICE_VERSION=1.2.7
-            - TARGET_URL=http://go-server:8081
+            - TARGET_URL=http://go-server-opentracing:8081
     py-client:
         container_name: py-client
         build: ./python/client
