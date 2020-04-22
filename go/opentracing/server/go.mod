@@ -1,4 +1,4 @@
-module github.com/codeboten/ls-examples/go/server
+module github.com/lightstep/ls-examples/go/opentracing/client
 
 go 1.14
 
