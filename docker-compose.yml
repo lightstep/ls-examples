@@ -23,6 +23,29 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=demo-client-go-opentracing
             - LIGHTSTEP_SERVICE_VERSION=1.2.7
             - TARGET_URL=http://go-server-opentracing:8081
+    go-server-opentelemetry:
+        container_name: go-server-opentelemetry
+        build: ./go/opentelemetry/server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-server-go-opentelemetry
+            - LIGHTSTEP_SERVICE_VERSION=5
+    go-client-opentelemetry:
+        container_name: go-client-opentelemetry
+        build: ./go/opentelemetry/client
+        networks:
+            - demo
+        depends_on:
+            - go-server-opentelemetry
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-go-opentelemetry
+            - LIGHTSTEP_SERVICE_VERSION=1.2.7
+            - TARGET_URL=http://go-server-opentelemetry:8081
     py-client:
         container_name: py-client
         build: ./python/client
