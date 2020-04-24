@@ -10,6 +10,7 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=demo-server-go
             - LIGHTSTEP_SERVICE_VERSION=5
+        stop_grace_period: 1s
     go-client:
         container_name: go-client
         build: ./go/client
@@ -23,6 +24,7 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=demo-client-go
             - LIGHTSTEP_SERVICE_VERSION=1.2.7
             - TARGET_URL=http://go-server:8081
+        stop_grace_period: 1s
     py-client:
         container_name: py-client
         build: ./python/client
@@ -36,6 +38,24 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=demo-client-py
             - LIGHTSTEP_SERVICE_VERSION=1.2.1
             - TARGET_URL=http://py-server:5000
+        stop_grace_period: 1s
+    py-otel-client:
+        container_name: py-otel-client
+        build:
+            context: ./python/client
+            dockerfile: Dockerfile.otel
+        networks:
+            - demo
+        depends_on:
+            - py-otel-server
+        env_file:
+            - .env
+        environment:
+            - OPENTELEMETRY_INSTRUMENTATION=1
+            - LIGHTSTEP_SERVICE_NAME=demo-otel-client-py
+            - LIGHTSTEP_SERVICE_VERSION=1.2.6
+            - TARGET_URL=http://py-otel-server:5000
+        stop_grace_period: 1s
     py-server:
         container_name: py-server
         build: ./python/server
@@ -46,6 +66,21 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=demo-server-py
             - LIGHTSTEP_SERVICE_VERSION=0.2.2
+        stop_grace_period: 1s
+    py-otel-server:
+        container_name: py-otel-server
+        build:
+            context: ./python/server
+            dockerfile: Dockerfile.otel
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - OPENTELEMETRY_INSTRUMENTATION=1
+            - LIGHTSTEP_SERVICE_NAME=demo-otel-server-py
+            - LIGHTSTEP_SERVICE_VERSION=0.2.7
+        stop_grace_period: 1s
     js-server:
         container_name: js-server
         build: ./js/server
@@ -55,6 +90,7 @@ services:
             - .env
         environment:
             - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-server
+        stop_grace_period: 1s
     js-client:
         container_name: js-client
         build: ./js/client
@@ -67,5 +103,40 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-client
             - TARGET_URL=http://js-server:8080/ping
+        stop_grace_period: 1s
+    mongo:
+        container_name: mongo
+        image: mongo:latest
+        networks:
+            - demo
+        stop_grace_period: 1s
+    mysql:
+        container_name: mysql
+        image: mysql:5.7
+        restart: always
+        environment:
+            MYSQL_USER: testuser
+            MYSQL_PASSWORD: testpassword
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_DATABASE: opentelemetry-tests
+        networks:
+            - demo
+        stop_grace_period: 1s
+    postgres:
+        container_name: postgres
+        image: postgres:10.5-alpine
+        environment:
+            POSTGRES_USER: testuser
+            POSTGRES_PASSWORD: testpassword
+            POSTGRES_DB: opentelemetry-tests
+        networks:
+            - demo
+        stop_grace_period: 1s
+    redis:
+        container_name: redis
+        image: redis:4.0-alpine
+        networks:
+            - demo
+        stop_grace_period: 1s
 networks:
     demo:
