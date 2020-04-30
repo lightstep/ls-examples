@@ -115,4 +115,6 @@ func main() {
 			return nil
 		})
 	})
+
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
