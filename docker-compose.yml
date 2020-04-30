@@ -1,54 +1,54 @@
 version: "3.7"
 services:
-    go-server-opentracing:
-        container_name: go-server-opentracing
+    go-server:
+        container_name: go-server
         build: ./go/opentracing/server
         networks:
             - demo
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-server-go-opentracing
+            - LIGHTSTEP_COMPONENT_NAME=demo-server-go
             - LIGHTSTEP_SERVICE_VERSION=5
         stop_grace_period: 1s
-    go-client-opentracing:
-        container_name: go-client-opentracing
+    go-client:
+        container_name: go-client
         build: ./go/opentracing/client
         networks:
             - demo
         depends_on:
-            - go-server-opentracing
+            - go-server
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-client-go-opentracing
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-go
             - LIGHTSTEP_SERVICE_VERSION=1.2.7
-            - TARGET_URL=http://go-server-opentracing:8081
+            - TARGET_URL=http://go-server:8081
         stop_grace_period: 1s
-    go-server-opentelemetry:
-        container_name: go-server-opentelemetry
+    go-server-otel:
+        container_name: go-server-otel
         build: ./go/opentelemetry/server
         networks:
             - demo
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-server-go-opentelemetry
+            - LIGHTSTEP_COMPONENT_NAME=demo-server-go-otel
             - LIGHTSTEP_SERVICE_VERSION=5
         stop_grace_period: 1s
-    go-client-opentelemetry:
-        container_name: go-client-opentelemetry
+    go-client-otel:
+        container_name: go-client-otel
         build: ./go/opentelemetry/client
         networks:
             - demo
         depends_on:
-            - go-server-opentelemetry
+            - go-server-otel
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-client-go-opentelemetry
+            - LIGHTSTEP_COMPONENT_NAME=demo-client-go-otel
             - LIGHTSTEP_SERVICE_VERSION=1.2.7
-            - TARGET_URL=http://go-server-opentelemetry:8081
+            - TARGET_URL=http://go-server-otel:8081
         stop_grace_period: 1s
     py-client:
         container_name: py-client
