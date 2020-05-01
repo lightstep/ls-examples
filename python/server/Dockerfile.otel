@@ -3,10 +3,8 @@ RUN pip install flask pymongo redis requests sqlalchemy
 RUN pip install opentelemetry-api \
     opentelemetry-auto-instrumentation \
     opentelemetry-sdk \
-    opentelemetry-ext-flask
-
-RUN pip install \
-    "git+https://github.com/lightstep/opentelemetry-exporter-python.git"
+    opentelemetry-ext-flask \
+    opentelemetry-ext-lightstep
 
 # install instrumentation that has not been released yet
 RUN pip install \
