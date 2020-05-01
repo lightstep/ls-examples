@@ -22,15 +22,6 @@ if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
         ConsoleSpanExporter,
         BatchExportSpanProcessor,
     )
-    from opentelemetry import propagators
-    from opentelemetry.propagators import composite
-    import opentelemetry.sdk.trace.propagation.b3_format as b3_format
-    from opentelemetry.trace.propagation.tracecontexthttptextformat import (
-        TraceContextHTTPTextFormat,
-    )
-
-    honey_badger = composite.CompositeHTTPPropagator([b3_format.B3Format()])
-    propagators.set_global_httptextformat(honey_badger)
 
     o = urlparse(
         os.getenv("LS_METRICS_URL", "https://ingest.lightstep.com:443/metrics")
