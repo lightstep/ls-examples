@@ -26,9 +26,9 @@ if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
         os.getenv("LIGHTSTEP_SERVICE_NAME"),
         token=os.environ.get("LIGHTSTEP_ACCESS_TOKEN"),
         host=o.hostname,
+        service_version=os.getenv("LIGHTSTEP_SERVICE_VERSION"),
     )
 
-    trace.set_tracer_provider(TracerProvider())
     trace.get_tracer_provider().add_span_processor(
         BatchExportSpanProcessor(span_exporter)
     )

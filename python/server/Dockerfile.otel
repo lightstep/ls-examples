@@ -1,8 +1,22 @@
 FROM python:3.7
-RUN pip install flask redis pymongo sqlalchemy
+RUN pip install flask pymongo redis requests sqlalchemy
 RUN pip install opentelemetry-api \
     opentelemetry-auto-instrumentation \
-    opentelemetry-ext-flask \
-    opentelemetry-ext-lightstep
+    opentelemetry-sdk \
+    opentelemetry-ext-flask
+
+RUN pip install \
+    "git+https://github.com/lightstep/opentelemetry-exporter-python.git"
+
+# install instrumentation that has not been released yet
+RUN pip install \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=opentelemetry-api" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=opentelemetry-auto-instrumentation" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=opentelemetry-sdk" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-redis" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-sqlalchemy" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-http-requests" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-pymongo"
+
 ADD server.py /app/server.py
 CMD ["opentelemetry-auto-instrumentation", "/app/server.py"]

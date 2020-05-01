@@ -52,6 +52,7 @@ services:
             - .env
         environment:
             - OPENTELEMETRY_INSTRUMENTATION=1
+            - OPENTELEMETRY_PYTHON_TRACER_PROVIDER=sdk_tracer_provider
             - LIGHTSTEP_SERVICE_NAME=demo-otel-client-py
             - LIGHTSTEP_SERVICE_VERSION=1.2.6
             - TARGET_URL=http://py-otel-server:5000
@@ -78,6 +79,7 @@ services:
             - .env
         environment:
             - OPENTELEMETRY_INSTRUMENTATION=1
+            - OPENTELEMETRY_PYTHON_TRACER_PROVIDER=sdk_tracer_provider
             - LIGHTSTEP_SERVICE_NAME=demo-otel-server-py
             - LIGHTSTEP_SERVICE_VERSION=0.2.7
         stop_grace_period: 1s
@@ -110,6 +112,8 @@ services:
         networks:
             - demo
         stop_grace_period: 1s
+        ports:
+            - 0.0.0.0:27017:27017
     mysql:
         container_name: mysql
         image: mysql:5.7
@@ -131,12 +135,16 @@ services:
             POSTGRES_DB: opentelemetry-tests
         networks:
             - demo
+        ports:
+            - 0.0.0.0:5432:5432
         stop_grace_period: 1s
     redis:
         container_name: redis
         image: redis:4.0-alpine
         networks:
             - demo
+        ports:
+            - 0.0.0.0:6379:6379
         stop_grace_period: 1s
 networks:
     demo:
