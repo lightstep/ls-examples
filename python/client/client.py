@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #
 # example code to test ls-trace-py
 #
