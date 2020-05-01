@@ -15,24 +15,33 @@ import time
 
 
 if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
-    from urllib.parse import urlparse
-    from opentelemetry import trace
-    from opentelemetry.ext.lightstep import LightStepSpanExporter
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import (
-        ConsoleSpanExporter,
-        BatchExportSpanProcessor,
-    )
+    if os.environ.get("OPENTELEMETRY_EXPORTER") == "collector":
+        from opentelemetry.ext.otcollector.trace_exporter import CollectorSpanExporter
+        from opentelemetry.ext.otcollector.metrics_exporter import (
+            CollectorMetricsExporter,
+        )
 
-    o = urlparse(
-        os.getenv("LS_METRICS_URL", "https://ingest.lightstep.com:443/metrics")
-    )
-    span_exporter = LightStepSpanExporter(
-        os.getenv("LIGHTSTEP_SERVICE_NAME"),
-        token=os.environ.get("LIGHTSTEP_ACCESS_TOKEN"),
-        host=o.hostname,
-        service_version=os.getenv("LIGHTSTEP_SERVICE_VERSION"),
-    )
+        span_exporter = CollectorSpanExporter(
+            service_name=os.getenv("LIGHTSTEP_SERVICE_NAME"),
+            endpoint=os.getenv("COLLECTOR_ENDPOINT", "localhost:55678"),
+        )
+
+    else:
+        from urllib.parse import urlparse
+        from opentelemetry.ext.lightstep import LightStepSpanExporter
+
+        o = urlparse(
+            os.getenv("LS_METRICS_URL", "https://ingest.lightstep.com:443/metrics")
+        )
+        span_exporter = LightStepSpanExporter(
+            os.getenv("LIGHTSTEP_SERVICE_NAME"),
+            token=os.environ.get("LIGHTSTEP_ACCESS_TOKEN"),
+            host=o.hostname,
+            service_version=os.getenv("LIGHTSTEP_SERVICE_VERSION"),
+        )
+
+    from opentelemetry import trace
+    from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
 
     trace.get_tracer_provider().add_span_processor(
         BatchExportSpanProcessor(span_exporter)
@@ -78,4 +87,4 @@ if __name__ == "__main__":
     target = os.getenv("TARGET_URL", "http://localhost:8081")
     while True:
         send_requests(target)
-        time.sleep(1)
+        time.sleep(5)

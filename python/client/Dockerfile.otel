@@ -14,7 +14,8 @@ RUN pip install \
     "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-redis" \
     "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-sqlalchemy" \
     "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-http-requests" \
-    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-pymongo"
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-pymongo" \
+    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-otcollector"
 
 ADD client.py /app/client.py
 CMD ["opentelemetry-auto-instrumentation", "/app/client.py"]
