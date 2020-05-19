@@ -40,6 +40,7 @@ if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
     trace.get_tracer_provider().add_span_processor(
         BatchExportSpanProcessor(span_exporter)
     )
+    tracer = trace.get_tracer(os.getenv("LIGHTSTEP_SERVICE_NAME"))
 
 else:
     from ddtrace import tracer
@@ -55,6 +56,14 @@ else:
             "lightstep.access_token": os.getenv("LIGHTSTEP_ACCESS_TOKEN"),
         }
     )
+
+
+def start_span_operation():
+    if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
+        return tracer.start_as_current_span
+    else:
+        return tracer.trace
+
 
 from flask import Flask
 
@@ -91,30 +100,33 @@ def _random_string(length):
 
 @app.route("/redis/<length>")
 def redis_integration(length):
-    r = redis.Redis(host="redis", port=6379)
-    r.mset({"length": _random_string(length)})
-    return str(r.get("length"))
+    with start_span_operation()("server redis operation"):
+        r = redis.Redis(host="redis", port=6379)
+        r.mset({"length": _random_string(length)})
+        return str(r.get("length"))
 
 
 @app.route("/pymongo/<length>")
 def pymongo_integration(length):
-    client = MongoClient("mongo", 27017, serverSelectionTimeoutMS=2000)
-    db = client["opentelemetry-tests"]
-    collection = db["tests"]
-    collection.find_one()
-    return _random_string(length)
+    with start_span_operation()("server pymongo operation"):
+        client = MongoClient("mongo", 27017, serverSelectionTimeoutMS=2000)
+        db = client["opentelemetry-tests"]
+        collection = db["tests"]
+        collection.find_one()
+        return _random_string(length)
 
 
 @app.route("/sqlalchemy/<length>")
 def sqlalchemy_integration(length):
-    # Create an engine that stores data in the local directory's
-    # sqlalchemy_example.db file.
-    engine = create_engine("sqlite:///sqlalchemy_example.db")
+    with start_span_operation()("server sqlalchemy operation"):
+        # Create an engine that stores data in the local directory's
+        # sqlalchemy_example.db file.
+        engine = create_engine("sqlite:///sqlalchemy_example.db")
 
-    # Create all tables in the engine. This is equivalent to "Create Table"
-    # statements in raw SQL.
-    Base.metadata.create_all(engine)
-    return str(_random_string(length))
+        # Create all tables in the engine. This is equivalent to "Create Table"
+        # statements in raw SQL.
+        Base.metadata.create_all(engine)
+        return str(_random_string(length))
 
 
 if __name__ == "__main__":

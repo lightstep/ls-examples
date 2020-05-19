@@ -43,7 +43,7 @@ services:
         container_name: py-otel-client
         build:
             context: ./python/client
-            dockerfile: Dockerfile.otel
+            dockerfile: Dockerfile.noinstrumentation.otel
         networks:
             - demo
         depends_on:
@@ -52,8 +52,10 @@ services:
             - .env
         environment:
             - OPENTELEMETRY_INSTRUMENTATION=1
+            - OPENTELEMETRY_EXPORTER=collector
+            - COLLECTOR_ENDPOINT=otel-collector:55678
             - OPENTELEMETRY_PYTHON_TRACER_PROVIDER=sdk_tracer_provider
-            - LIGHTSTEP_SERVICE_NAME=demo-otel-client-py
+            - LIGHTSTEP_SERVICE_NAME=manual-instrumentation-client-py
             - LIGHTSTEP_SERVICE_VERSION=1.2.6
             - TARGET_URL=http://py-otel-server:5000
         stop_grace_period: 1s
@@ -72,15 +74,17 @@ services:
         container_name: py-otel-server
         build:
             context: ./python/server
-            dockerfile: Dockerfile.otel
+            dockerfile: Dockerfile.noinstrumentation.otel
         networks:
             - demo
         env_file:
             - .env
         environment:
             - OPENTELEMETRY_INSTRUMENTATION=1
+            - OPENTELEMETRY_EXPORTER=collector
+            - COLLECTOR_ENDPOINT=otel-collector:55678
             - OPENTELEMETRY_PYTHON_TRACER_PROVIDER=sdk_tracer_provider
-            - LIGHTSTEP_SERVICE_NAME=demo-otel-server-py
+            - LIGHTSTEP_SERVICE_NAME=manual-instrumentation-server-py
             - LIGHTSTEP_SERVICE_VERSION=0.2.7
         stop_grace_period: 1s
     py-collector-client:
@@ -92,14 +96,15 @@ services:
             - demo
         depends_on:
             - py-collector-server
+            - otel-collector
         env_file:
             - .env
         environment:
             - OPENTELEMETRY_INSTRUMENTATION=1
             - OPENTELEMETRY_EXPORTER=collector
             - COLLECTOR_ENDPOINT=otel-collector:55678
-            - OPENTELEMETRY_PYTHON_TRACER_PROVIDER=sdk_tracer_provider
-            - LIGHTSTEP_SERVICE_NAME=collector-client-py
+            - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
+            - LIGHTSTEP_SERVICE_NAME=auto-instrumentation-client-py
             - LIGHTSTEP_SERVICE_VERSION=1.2.9
             - TARGET_URL=http://py-collector-server:5000
         stop_grace_period: 1s
@@ -110,14 +115,16 @@ services:
             dockerfile: Dockerfile.otel
         networks:
             - demo
+        depends_on:
+            - otel-collector
         env_file:
             - .env
         environment:
             - OPENTELEMETRY_INSTRUMENTATION=1
             - OPENTELEMETRY_EXPORTER=collector
             - COLLECTOR_ENDPOINT=otel-collector:55678
-            - OPENTELEMETRY_PYTHON_TRACER_PROVIDER=sdk_tracer_provider
-            - LIGHTSTEP_SERVICE_NAME=collector-server-py
+            - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
+            - LIGHTSTEP_SERVICE_NAME=auto-instrumentation-server-py
             - LIGHTSTEP_SERVICE_VERSION=0.2.8
         stop_grace_period: 1s
     js-server:

@@ -72,7 +72,7 @@ def start_span_operation():
 
 def send_requests(target):
     integrations = ["pymongo", "redis", "sqlalchemy"]
-    with start_span_operation()("client request"):
+    with start_span_operation()("client operation"):
         for i in integrations:
             url = f"{target}/{i}/{random.randint(1,1024)}"
             try:
