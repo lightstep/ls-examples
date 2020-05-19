@@ -1,0 +1,8 @@
+FROM python:3.7
+RUN pip install flask pymongo redis requests sqlalchemy
+RUN pip install opentelemetry-api \
+    opentelemetry-sdk \
+    opentelemetry-ext-otcollector
+
+ADD client.py /app/client.py
+CMD ["/app/client.py"]
