@@ -25,9 +25,13 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
-var lsToken = os.Getenv("LIGHTSTEP_ACCESS_TOKEN")
-var lsMetricsURL = os.Getenv("LS_METRICS_URL")
-var targetURL = os.Getenv("TARGET_URL")
+var (
+	lsToken        = os.Getenv("LIGHTSTEP_ACCESS_TOKEN")
+	lsMetricsURL   = os.Getenv("LS_METRICS_URL")
+	targetURL      = os.Getenv("TARGET_URL")
+	componentName  = os.Getenv("LIGHTSTEP_COMPONENT_NAME")
+	serviceVersion = os.Getenv("LIGHTSTEP_SERVICE_VERSION")
+)
 
 func initLightstepTracer() {
 	u, err := url.Parse(lsMetricsURL)
@@ -44,11 +48,9 @@ func initLightstepTracer() {
 		}
 	}
 
-	componentName := os.Getenv("LIGHTSTEP_COMPONENT_NAME")
 	if len(componentName) == 0 {
 		componentName = "test-go-client"
 	}
-	serviceVersion := os.Getenv("LIGHTSTEP_SERVICE_VERSION")
 	if len(serviceVersion) == 0 {
 		serviceVersion = "0.0.0"
 	}
