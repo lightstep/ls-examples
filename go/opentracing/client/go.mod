@@ -1,4 +1,4 @@
-module github.com/lightstep/examples
+module github.com/lightstep/ls-examples/go/opentracing/client
 
 go 1.14
 
