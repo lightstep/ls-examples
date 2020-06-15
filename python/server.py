@@ -9,62 +9,10 @@ from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
-    if os.environ.get("OPENTELEMETRY_EXPORTER") == "collector":
-        from opentelemetry.ext.otcollector.trace_exporter import CollectorSpanExporter
-        from opentelemetry.ext.otcollector.metrics_exporter import (
-            CollectorMetricsExporter,
-        )
-
-        span_exporter = CollectorSpanExporter(
-            service_name=os.getenv("LIGHTSTEP_SERVICE_NAME"),
-            endpoint=os.getenv("COLLECTOR_ENDPOINT", "localhost:55678"),
-        )
-    else:
-        from urllib.parse import urlparse
-        from opentelemetry.ext.lightstep import LightStepSpanExporter
-
-        o = urlparse(
-            os.getenv("LS_METRICS_URL", "https://ingest.lightstep.com:443/metrics")
-        )
-        span_exporter = LightStepSpanExporter(
-            os.getenv("LIGHTSTEP_SERVICE_NAME"),
-            token=os.environ.get("LIGHTSTEP_ACCESS_TOKEN"),
-            host=o.hostname,
-            service_version=os.getenv("LIGHTSTEP_SERVICE_VERSION"),
-        )
-
-    from opentelemetry import trace
-    from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
-
-    trace.get_tracer_provider().add_span_processor(
-        BatchExportSpanProcessor(span_exporter)
-    )
-    tracer = trace.get_tracer(os.getenv("LIGHTSTEP_SERVICE_NAME"))
-
-else:
-    from ddtrace import tracer
-    from ddtrace.constants import FILTERS_KEY
-    from ddtrace.filters import FilterRequestsOnUrl
-    from ddtrace.propagation.b3 import B3HTTPPropagator
-
-    tracer.configure(http_propagator=B3HTTPPropagator, settings={})
-    tracer.set_tags(
-        {
-            "lightstep.service_name": os.getenv("LIGHTSTEP_COMPONENT_NAME"),
-            "service.version": os.getenv("LIGHTSTEP_SERVICE_VERSION"),
-            "lightstep.access_token": os.getenv("LIGHTSTEP_ACCESS_TOKEN"),
-        }
-    )
+from common import get_tracer, start_span_operation
 
 
-def start_span_operation():
-    if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
-        return tracer.start_as_current_span
-    else:
-        return tracer.trace
-
-
+tracer = get_tracer()
 from flask import Flask
 
 app = Flask(__name__)
@@ -100,7 +48,7 @@ def _random_string(length):
 
 @app.route("/redis/<length>")
 def redis_integration(length):
-    with start_span_operation()("server redis operation"):
+    with start_span_operation(tracer)("server redis operation"):
         r = redis.Redis(host="redis", port=6379)
         r.mset({"length": _random_string(length)})
         return str(r.get("length"))
@@ -108,7 +56,7 @@ def redis_integration(length):
 
 @app.route("/pymongo/<length>")
 def pymongo_integration(length):
-    with start_span_operation()("server pymongo operation"):
+    with start_span_operation(tracer)("server pymongo operation"):
         client = MongoClient("mongo", 27017, serverSelectionTimeoutMS=2000)
         db = client["opentelemetry-tests"]
         collection = db["tests"]
@@ -118,7 +66,7 @@ def pymongo_integration(length):
 
 @app.route("/sqlalchemy/<length>")
 def sqlalchemy_integration(length):
-    with start_span_operation()("server sqlalchemy operation"):
+    with start_span_operation(tracer)("server sqlalchemy operation"):
         # Create an engine that stores data in the local directory's
         # sqlalchemy_example.db file.
         engine = create_engine("sqlite:///sqlalchemy_example.db")
