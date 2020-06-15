@@ -1,6 +1,8 @@
 receivers:
     opencensus:
       endpoint: "0.0.0.0:55678"
+    otlp:
+      endpoint: "0.0.0.0:55680"
   
 exporters:
     prometheus:
@@ -8,6 +10,11 @@ exporters:
 
     logging:
         loglevel: debug
+
+    # when a satellite with OTLP configured is available
+    # otlp:
+    #   endpoint: satellite:8360
+    #   secure: false
 
     lightstep:
         access_token: <TOKEN HERE>
@@ -23,9 +30,11 @@ processors:
 service:
     pipelines:
       traces:
-        receivers: [opencensus]
-        exporters: [logging, lightstep]
+        receivers: [opencensus, otlp]
+        # when a satellite with OTLP configured is available
+        # exporters: [logging, otlp]
+        exporters: [logging, otlp]
         processors: [batch]
       metrics:
-        receivers: [opencensus]
+        receivers: [opencensus, otlp]
         exporters: [logging]
