@@ -1,0 +1,9 @@
+FROM openjdk:8-jre-alpine
+
+ADD target/client-1.0-SNAPSHOT.jar /app/
+ADD opentelemetry-auto-all.jar /app/
+
+ENTRYPOINT java -javaagent:/app/opentelemetry-auto-all.jar \
+        -Dota.exporter.otlp.endpoint=$LS_SATELLITE_URL \
+        -cp /app/client-1.0-SNAPSHOT.jar \
+        com.lightstep.examples.client.App
