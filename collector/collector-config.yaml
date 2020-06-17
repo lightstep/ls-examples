@@ -36,6 +36,7 @@ service:
     pipelines:
       traces:
         receivers: [opencensus, otlp]
+        # when a satellite with OTLP configured is available
         exporters: [logging, otlp]
         # exporters: [logging, lightstep]
         processors: [batch]
