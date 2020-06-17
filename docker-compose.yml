@@ -151,8 +151,8 @@ services:
     py-collector-client:
         container_name: py-collector-client
         build:
-            context: ./python/client
-            dockerfile: Dockerfile.otel
+            context: ./python
+            dockerfile: Dockerfile.client.otel
         networks:
             - demo
         depends_on:
@@ -173,8 +173,8 @@ services:
     py-collector-server:
         container_name: py-collector-server
         build:
-            context: ./python/server
-            dockerfile: Dockerfile.otel
+            context: ./python
+            dockerfile: Dockerfile.server.otel
         networks:
             - demo
         depends_on:
