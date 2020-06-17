@@ -253,6 +253,33 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-client
             - TARGET_URL=http://js-server:8080/ping
         stop_grace_period: 1s
+    js-otlp-server:
+        container_name: js-otlp-server
+        build:
+            context: ./js/otlp
+            dockerfile: Dockerfile.server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-js-otlp-server
+        stop_grace_period: 1s
+    js-otlp-client:
+        container_name: js-otlp-client
+        build:
+            context: ./js/otlp
+            dockerfile: Dockerfile.client
+        networks:
+            - demo
+        depends_on:
+            - js-otlp-server
+        env_file:
+            - .env
+        environment:
+            - LIGHTSTEP_COMPONENT_NAME=demo-js-otlp-client
+            - TARGET_URL=http://js-otlp-server:8080/ping
+        stop_grace_period: 1s
     ##############################
     ####### Java examples ########
     ##############################
