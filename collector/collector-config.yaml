@@ -16,12 +16,17 @@ exporters:
     #   endpoint: satellite:8360
     #   secure: false
 
-    lightstep:
-        access_token: <TOKEN HERE>
-        satellite_host: "ingest.staging.lightstep.com"
-        satellite_port: 443
-        service_name: "myService"
-        plain_text: false
+    # configuring otlp to public satellites
+    otlp:
+      endpoint: ingest.lightstep.com:443
+      headers: {"lightstep-access-token":<TOKEN HERE>}
+
+    # lightstep:
+    #     access_token: <TOKEN HERE>
+    #     satellite_host: "ingest.lightstep.com"
+    #     satellite_port: 443
+    #     service_name: "myService"
+    #     plain_text: false
   
 processors:
     batch:
@@ -32,8 +37,8 @@ service:
       traces:
         receivers: [opencensus, otlp]
         # when a satellite with OTLP configured is available
-        # exporters: [logging, otlp]
         exporters: [logging, otlp]
+        # exporters: [logging, lightstep]
         processors: [batch]
       metrics:
         receivers: [opencensus, otlp]
