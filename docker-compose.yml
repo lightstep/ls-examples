@@ -263,6 +263,7 @@ services:
         env_file:
             - .env
         environment:
+            - LS_SATELLITE_URL=ingest.lightstep.com:443
             - LIGHTSTEP_COMPONENT_NAME=demo-js-otlp-server
         stop_grace_period: 1s
     js-otlp-client:
@@ -277,6 +278,7 @@ services:
         env_file:
             - .env
         environment:
+            - LS_SATELLITE_URL=ingest.lightstep.com:443
             - LIGHTSTEP_COMPONENT_NAME=demo-js-otlp-client
             - TARGET_URL=http://js-otlp-server:8080/ping
         stop_grace_period: 1s

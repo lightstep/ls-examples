@@ -30,7 +30,8 @@
         "@opentelemetry/exporter-collector": "^0.8.3",
         "@opentelemetry/node": "^0.8.3",
         "@opentelemetry/plugin-http": "^0.8.3",
-        "@opentelemetry/tracing": "^0.8.3"
+        "@opentelemetry/tracing": "^0.8.3",
+        "grpc": "^1.24.3"
     },
     "homepage": "https://github.com/open-telemetry/opentelemetry-js#readme",
     "devDependencies": {
