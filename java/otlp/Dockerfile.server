@@ -1,9 +1,10 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:8
 
-ADD target/server-1.0-SNAPSHOT.jar /app/
-ADD opentelemetry-auto-all.jar /app/
+RUN mkdir /app
+RUN wget -P /app/ https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-auto-all.jar
 
-ENTRYPOINT java -javaagent:/app/opentelemetry-auto-all.jar \
-        -Dota.exporter.otlp.endpoint=$LS_SATELLITE_URL \
-        -cp /app/server-1.0-SNAPSHOT.jar \
-        com.lightstep.examples.server.App
+ADD target/lightstep-otlp-server.jar /app/
+
+ENTRYPOINT java \
+        -jar /app/lightstep-otlp-server.jar\
+        com.lightstep.otlp.server.ExampleServer
