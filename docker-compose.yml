@@ -281,6 +281,35 @@ services:
             - LIGHTSTEP_SERVICE_VERSION=3.2.1
             - TARGET_URL=http://java-server:8083
         stop_grace_period: 1s
+    java-otlp-client:
+        container_name: java-otlp-client
+        build:
+            context: ./java/otlp
+            dockerfile: Dockerfile.client
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - OTEL_RESOURCE_ATTRIBUTES=service.name=demo-java-otlp-client
+            - LIGHTSTEP_SERVICE_VERSION=11.11.10
+            - LS_SATELLITE_URL=ingest.lightstep.com:443
+            - TARGET_URL=http://java-otlp-server:8083
+        stop_grace_period: 1s
+    java-otlp-server:
+        container_name: java-otlp-server
+        build:
+            context: ./java/otlp
+            dockerfile: Dockerfile.server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - OTEL_RESOURCE_ATTRIBUTES=service.name=demo-java-otlp-server
+            - LIGHTSTEP_SERVICE_VERSION=11.11.11
+            - LS_SATELLITE_URL=ingest.lightstep.com:443
+        stop_grace_period: 1s
     ##############################
     ####### Extra services #######
     ##############################

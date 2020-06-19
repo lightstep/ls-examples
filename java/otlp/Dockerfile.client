@@ -1,0 +1,9 @@
+FROM openjdk:8
+
+RUN mkdir /app
+RUN wget -P /app/ https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-auto-all.jar
+
+ADD target/lightstep-otlp-client.jar /app/
+
+ENTRYPOINT java -jar /app/lightstep-otlp-client.jar \
+        com.lightstep.otlp.client.Client
