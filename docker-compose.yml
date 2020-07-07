@@ -83,6 +83,31 @@ services:
             - LS_SERVICE_VERSION=9.9.2
             - TARGET_URL=http://go-otlp-server:8081
         stop_grace_period: 1s
+    go-locl-server:
+        container_name: go-locl-server
+        build: ./go/locl/server
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - LS_SERVICE_NAME=demo-go-locl-server
+            - LS_SERVICE_VERSION=9.9.9
+        stop_grace_period: 1s
+    go-locl-client:
+        container_name: go-locl-client
+        build: ./go/locl/client
+        networks:
+            - demo
+        depends_on:
+            - go-locl-server
+        env_file:
+            - .env
+        environment:
+            - LS_SERVICE_NAME=demo-go-locl-client
+            - LS_SERVICE_VERSION=9.9.8
+            - DESTINATION_URL=http://go-locl-server:8081
+        stop_grace_period: 1s
     ###############################
     ####### Python examples #######
     ###############################
@@ -226,6 +251,37 @@ services:
             - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
             - LIGHTSTEP_SERVICE_NAME=demo-py-otlp-server
             - LIGHTSTEP_SERVICE_VERSION=10.10.9
+        stop_grace_period: 1s
+    py-locl-client:
+        container_name: py-locl-client
+        build:
+            context: ./python
+            dockerfile: Dockerfile.client.locl
+        networks:
+            - demo
+        depends_on:
+            - py-locl-server
+        env_file:
+            - .env
+        environment:
+            - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
+            - LS_SERVICE_NAME=demo-py-locl-client
+            - LS_SERVICE_VERSION=10.10.10
+            - DESTINATION_URL=http://py-locl-server:5000
+        stop_grace_period: 1s
+    py-locl-server:
+        container_name: py-locl-server
+        build:
+            context: ./python
+            dockerfile: Dockerfile.server.locl
+        networks:
+            - demo
+        env_file:
+            - .env
+        environment:
+            - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
+            - LS_SERVICE_NAME=demo-py-locl-server
+            - LS_SERVICE_VERSION=10.10.9
         stop_grace_period: 1s
     ###################################
     ####### Javascript examples #######

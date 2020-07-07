@@ -1,0 +1,18 @@
+FROM python:3.7
+RUN pip install flask pymongo redis requests sqlalchemy
+RUN pip install opentelemetry-api \
+    opentelemetry-instrumentation \
+    opentelemetry-sdk \
+    opentelemetry-ext-flask \
+    opentelemetry-ext-redis \
+    opentelemetry-ext-sqlalchemy \
+    opentelemetry-ext-requests \
+    opentelemetry-ext-otlp \
+    opentelemetry-ext-lightstep
+
+RUN pip install "git+https://github.com/lightstep/otel-python.git"
+# install instrumentation that has not been released yet
+#RUN pip install \
+#    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-redis"
+ADD server_locl.py /app/server.py
+CMD ["opentelemetry-instrument", "/app/server.py"]
