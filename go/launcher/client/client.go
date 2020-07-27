@@ -1,5 +1,5 @@
 //
-// example code to test lightstep/otel-go/locl
+// example code to test lightstep/otel-launcher-go/launcher
 //
 // usage:
 //   LS_ACCESS_TOKEN=${SECRET_TOKEN} \
@@ -17,8 +17,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/lightstep/otel-go/locl"
+	"github.com/lightstep/otel-launcher-go/launcher"
 	"go.opentelemetry.io/otel/api/global"
+	"go.opentelemetry.io/otel/instrumentation/httptrace"
 )
 
 var (
@@ -32,6 +33,7 @@ func makeRequest() {
 		contentLength := mathrand.Intn(2048)
 		url := fmt.Sprintf("%s/content/%d", destinationURL, contentLength)
 		req, _ := http.NewRequest("GET", url, nil)
+		httptrace.Inject(ctx, req)
 		res, err := client.Do(req)
 		if err != nil {
 			fmt.Println(err)
@@ -44,8 +46,8 @@ func makeRequest() {
 }
 
 func main() {
-	lsOtel := locl.ConfigureOpentelemetry()
-	defer lsOtel.Shutdown()
+	otel := launcher.ConfigureOpentelemetry()
+	defer otel.Shutdown()
 	if len(destinationURL) == 0 {
 		destinationURL = "http://localhost:8081"
 	}
