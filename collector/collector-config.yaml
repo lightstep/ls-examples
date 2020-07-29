@@ -2,7 +2,8 @@ receivers:
     opencensus:
       endpoint: "0.0.0.0:55678"
     otlp:
-      endpoint: "0.0.0.0:55680"
+      protocols:
+          grpc:
   
 exporters:
     prometheus:
@@ -14,7 +15,7 @@ exporters:
     # when a satellite with OTLP configured is available
     # otlp:
     #   endpoint: satellite:8360
-    #   secure: false
+    #   insecure: true
 
     # configuring otlp to public satellites
     otlp:
