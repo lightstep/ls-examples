@@ -63,7 +63,8 @@ services:
         depends_on:
             - otel-collector
         environment:
-            - LS_SATELLITE_URL=ingest.lightstep.com:443
+            - LS_SATELLITE_URL=otel-collector:55680
+            - LS_INSECURE=1
             - LS_SERVICE_NAME=demo-go-otlp-server
             - LS_SERVICE_VERSION=9.9.1
         stop_grace_period: 1s
@@ -78,7 +79,8 @@ services:
         env_file:
             - .env
         environment:
-            - LS_SATELLITE_URL=ingest.lightstep.com:443
+            - LS_SATELLITE_URL=otel-collector:55680
+            - LS_INSECURE=1
             - LS_SERVICE_NAME=demo-go-otlp-client
             - LS_SERVICE_VERSION=9.9.2
             - TARGET_URL=http://go-otlp-server:8081
@@ -411,7 +413,7 @@ services:
         stop_grace_period: 1s
     otel-collector:
         container_name: otel-collector
-        image: otel/opentelemetry-collector-contrib:latest
+        image: otel/opentelemetry-collector:0.6.1
         command: ["--config=/conf/collector-config.yaml", "--log-level=DEBUG"]
         networks:
             - demo
