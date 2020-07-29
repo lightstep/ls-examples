@@ -309,6 +309,24 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-client
             - TARGET_URL=http://js-server:8080/ping
         stop_grace_period: 1s
+    launcher-js-server:
+        container_name: launcher-js-server
+        build: ./js/launcher/server
+        networks:
+            - demo
+        env_file:
+            - .env
+        launcher-js-client:
+        container_name: launcher-js-client
+        build: ./js/launcher/client
+        networks:
+            - demo
+        depends_on:
+            - launcher-js-server
+        env_file:
+            - .env
+        environment:
+            - TARGET_URL=http://launcher-js-server:8080/ping
     ##############################
     ####### Java examples ########
     ##############################
