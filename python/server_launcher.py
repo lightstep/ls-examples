@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 from opentelemetry import trace
-from opentelemetry.lightstep import configure_opentelemetry
+from opentelemetry.launcher import configure_opentelemetry
 
 
 configure_opentelemetry()

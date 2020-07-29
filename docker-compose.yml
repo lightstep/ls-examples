@@ -252,35 +252,35 @@ services:
             - LIGHTSTEP_SERVICE_NAME=demo-py-otlp-server
             - LIGHTSTEP_SERVICE_VERSION=10.10.9
         stop_grace_period: 1s
-    py-locl-client:
-        container_name: py-locl-client
+    py-launcher-client:
+        container_name: py-launcher-client
         build:
             context: ./python
-            dockerfile: Dockerfile.client.locl
+            dockerfile: Dockerfile.client.launcher
         networks:
             - demo
         depends_on:
-            - py-locl-server
+            - py-launcher-server
         env_file:
             - .env
         environment:
             - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
-            - LS_SERVICE_NAME=demo-py-locl-client
+            - LS_SERVICE_NAME=demo-py-launcher-client
             - LS_SERVICE_VERSION=10.10.10
-            - DESTINATION_URL=http://py-locl-server:5000
+            - DESTINATION_URL=http://py-launcher-server:5000
         stop_grace_period: 1s
-    py-locl-server:
-        container_name: py-locl-server
+    py-launcher-server:
+        container_name: py-launcher-server
         build:
             context: ./python
-            dockerfile: Dockerfile.server.locl
+            dockerfile: Dockerfile.server.launcher
         networks:
             - demo
         env_file:
             - .env
         environment:
             - OPENTELEMETRY_PYTHON_tracer_provider=sdk_tracer_provider
-            - LS_SERVICE_NAME=demo-py-locl-server
+            - LS_SERVICE_NAME=demo-py-launcher-server
             - LS_SERVICE_VERSION=10.10.9
         stop_grace_period: 1s
     ###################################
