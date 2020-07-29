@@ -287,8 +287,8 @@ services:
     ####### Javascript examples #######
     ###################################
     js-server:
-        container_name: js-server
-        build: ./js/server
+        container_name: ls-trace-js-server
+        build: ./js/ls-trace-js/server
         networks:
             - demo
         env_file:
@@ -297,12 +297,12 @@ services:
             - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-server
         stop_grace_period: 1s
     js-client:
-        container_name: js-client
-        build: ./js/client
+        container_name: ls-trace-js-client
+        build: ./js/ls-trace-js/client
         networks:
             - demo
         depends_on:
-            - js-server
+            - ls-trace-js-server
         env_file:
             - .env
         environment:
