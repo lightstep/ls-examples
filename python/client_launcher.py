@@ -14,7 +14,7 @@ import random
 import time
 
 from opentelemetry import trace
-from opentelemetry.lightstep import configure_opentelemetry
+from opentelemetry.launcher import configure_opentelemetry
 
 import requests
 

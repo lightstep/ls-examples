@@ -1,0 +1,12 @@
+FROM python:3.7
+RUN pip install flask pymongo redis requests sqlalchemy
+RUN pip install opentelemetry-launcher
+RUN opentelemetry-bootstrap -a install
+
+# RUN pip install "git+https://github.com/lightstep/otel-launcher-python.git"
+# install instrumentation that has not been released yet
+#RUN pip install \
+#    "git+https://github.com/open-telemetry/opentelemetry-python.git@master#subdirectory=ext/opentelemetry-ext-otlp"
+
+ADD client_launcher.py /app/client.py
+CMD ["opentelemetry-instrument", "/app/client.py"]
