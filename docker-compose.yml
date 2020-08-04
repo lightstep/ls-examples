@@ -280,8 +280,8 @@ services:
     ###################################
     ####### Javascript examples #######
     ###################################
-    js-server:
-        container_name: js-server
+    js-lstrace-server:
+        container_name: js-lstrace-server
         build: ./js/server
         networks:
             - demo
@@ -290,46 +290,46 @@ services:
         environment:
             - LIGHTSTEP_COMPONENT_NAME=js-lstrace-server
         stop_grace_period: 1s
-    js-client:
-        container_name: js-client
+    js-lstrace-client:
+        container_name: js-lstrace-client
         build: ./js/client
         networks:
             - demo
         depends_on:
-            - js-server
+            - js-lstrace-server
         env_file:
             - .env
         environment:
             - LIGHTSTEP_COMPONENT_NAME=js-lstrace-client
-            - TARGET_URL=http://js-server:8080/ping
+            - TARGET_URL=http://js-lstrace-server:8080/ping
         stop_grace_period: 1s
     ##############################
     ####### Java examples ########
     ##############################
-    java-server:
-        container_name: java-server
+    java-specialagent-server:
+        container_name: java-specialagent-server
         build: ./java/server
         networks:
             - demo
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-server-java
+            - LIGHTSTEP_COMPONENT_NAME=java-specialagent-server
             - LIGHTSTEP_SERVICE_VERSION=4.3.2
         stop_grace_period: 1s
-    java-client:
-        container_name: java-client
+    java-specialagent-client:
+        container_name: java-specialagent-client
         build: ./java/client
         networks:
             - demo
         depends_on:
-            - java-server
+            - java-specialagent-server
         env_file:
             - .env
         environment:
-            - LIGHTSTEP_COMPONENT_NAME=demo-client-java
+            - LIGHTSTEP_COMPONENT_NAME=java-specialagent-client
             - LIGHTSTEP_SERVICE_VERSION=3.2.1
-            - TARGET_URL=http://java-server:8083
+            - TARGET_URL=http://java-specialagent-server:8083
         stop_grace_period: 1s
     java-otlp-client:
         container_name: java-otlp-client
@@ -338,11 +338,12 @@ services:
             dockerfile: Dockerfile.client
         networks:
             - demo
+        depends_on:
+            - java-otlp-server
         env_file:
             - .env
         environment:
-            - OTEL_RESOURCE_ATTRIBUTES=service.name=demo-java-otlp-client
-            - LIGHTSTEP_SERVICE_VERSION=11.11.10
+            - OTEL_RESOURCE_ATTRIBUTES=service.name=java-otlp-client,service.version=11.11.10
             - LS_SATELLITE_URL=ingest.lightstep.com:443
             - TARGET_URL=http://java-otlp-server:8083
         stop_grace_period: 1s
@@ -356,8 +357,7 @@ services:
         env_file:
             - .env
         environment:
-            - OTEL_RESOURCE_ATTRIBUTES=service.name=demo-java-otlp-server
-            - LIGHTSTEP_SERVICE_VERSION=11.11.11
+            - OTEL_RESOURCE_ATTRIBUTES=service.name=java-otlp-server,service.version=11.11.11
             - LS_SATELLITE_URL=ingest.lightstep.com:443
         stop_grace_period: 1s
     ##############################
