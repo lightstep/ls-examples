@@ -2,7 +2,7 @@
 // example code to test lightstep/opentelemetry-exporter-go
 //
 // usage:
-//   LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
+//   LS_ACCESS_TOKEN=${SECRET_TOKEN} \
 //   LIGHTSTEP_COMPONENT_NAME=demo-client-go \
 //   LIGHTSTEP_SERVICE_VERSION=0.1.8 \
 //   go run client.go
@@ -26,7 +26,7 @@ import (
 )
 
 var (
-	lsToken        = os.Getenv("LIGHTSTEP_ACCESS_TOKEN")
+	lsToken        = os.Getenv("LS_ACCESS_TOKEN")
 	lsMetricsURL   = os.Getenv("LS_METRICS_URL")
 	targetURL      = os.Getenv("TARGET_URL")
 	componentName  = os.Getenv("LIGHTSTEP_COMPONENT_NAME")

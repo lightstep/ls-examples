@@ -3,7 +3,7 @@
 # example code to test ls-trace-py
 #
 # usage:
-#   LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
+#   LS_ACCESS_TOKEN=${SECRET_TOKEN} \
 #   LIGHTSTEP_COMPONENT_NAME=demo-python \
 #   LIGHTSTEP_SERVICE_VERSION=0.0.8 \
 #   ls-trace-run python client.py

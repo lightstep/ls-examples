@@ -1,6 +1,6 @@
 'use strict';
 
-const ACCESS_TOKEN = process.env.LIGHTSTEP_ACCESS_TOKEN;
+const ACCESS_TOKEN = process.env.LS_ACCESS_TOKEN;
 const COMPONENT_NAME =
   process.env.LIGHTSTEP_COMPONENT_NAME || 'ls-trace-js-client';
 const SERVICE_VERSION = process.env.LIGHTSTEP_SERVICE_VERSION || '0.0.1';

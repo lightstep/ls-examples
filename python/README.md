@@ -13,7 +13,7 @@ export SECRET_TOKEN=<lightstep access token>
 ## Start the client
 
 ```bash
-LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
+LS_ACCESS_TOKEN=${SECRET_TOKEN} \
 LIGHTSTEP_COMPONENT_NAME=demo-python \
 LIGHTSTEP_SERVICE_VERSION=0.0.8 \
 ls-trace-run python client.py
@@ -24,7 +24,7 @@ ls-trace-run python client.py
 
 | Name | Required | Default |
 | ---- | -------- | ------- |
-|LIGHTSTEP_ACCESS_TOKEN| yes|
+|LS_ACCESS_TOKEN| yes|
 |LIGHTSTEP_COMPONENT_NAME|yes|
 |LIGHTSTEP_SERVICE_VERSION|yes|
 |LIGHTSTEP_HOST| No | ingest.lightstep.com|

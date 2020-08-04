@@ -2,7 +2,7 @@
 // example code to test lightstep-tracer-go
 //
 // usage:
-//   LIGHTSTEP_ACCESS_TOKEN=${SECRET_TOKEN} \
+//   LS_ACCESS_TOKEN=${SECRET_TOKEN} \
 //   LIGHTSTEP_COMPONENT_NAME=demo-client-go \
 //   LIGHTSTEP_SERVICE_VERSION=0.1.8 \
 //   go run client.go
@@ -23,7 +23,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 )
 
-var lsToken = os.Getenv("LIGHTSTEP_ACCESS_TOKEN")
+var lsToken = os.Getenv("LS_ACCESS_TOKEN")
 var lsMetricsURL = os.Getenv("LS_METRICS_URL")
 var targetURL = os.Getenv("TARGET_URL")
 

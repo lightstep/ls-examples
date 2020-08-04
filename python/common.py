@@ -20,9 +20,7 @@ def get_otlp_exporter():
     return OTLPSpanExporter(
         credentials=credentials,
         endpoint=os.getenv("COLLECTOR_ENDPOINT", "localhost:55678"),
-        metadata=(
-            ("lightstep-access-token", os.environ.get("LIGHTSTEP_ACCESS_TOKEN")),
-        ),
+        metadata=(("lightstep-access-token", os.environ.get("LS_ACCESS_TOKEN")),),
     )
 
 
@@ -35,7 +33,7 @@ def get_ls_exporter():
     )
     return LightStepSpanExporter(
         os.getenv("LIGHTSTEP_SERVICE_NAME"),
-        token=os.environ.get("LIGHTSTEP_ACCESS_TOKEN"),
+        token=os.environ.get("LS_ACCESS_TOKEN"),
         host=o.hostname,
         service_version=os.getenv("LIGHTSTEP_SERVICE_VERSION"),
     )
@@ -74,7 +72,7 @@ def get_ls_tracer():
         {
             "lightstep.service_name": os.getenv("LIGHTSTEP_COMPONENT_NAME"),
             "service.version": os.getenv("LIGHTSTEP_SERVICE_VERSION"),
-            "lightstep.access_token": os.getenv("LIGHTSTEP_ACCESS_TOKEN"),
+            "lightstep.access_token": os.getenv("LS_ACCESS_TOKEN"),
         }
     )
 
