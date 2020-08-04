@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "lightstep-opentelemetry-launcher-node": "github:lightstep/otel-launcher-node#a89079e963bbd5793cb674899daa1a0f36b552e9",
-    "@opentelemetry/plugins-node-all": "^0.10.1"
+    "lightstep-opentelemetry-launcher-node": "^0.10.1",
+    "@opentelemetry/plugins-node-all": "^0.10.2"
   }
 }
