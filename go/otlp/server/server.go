@@ -23,7 +23,7 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	// re-enable once the new version of otel-go and otel-go-contrib is released
-	// muxtrace "go.opentelemetry.io/contrib/instrumentation/gorilla/mux"
+	muxtrace "go.opentelemetry.io/contrib/instrumentation/gorilla/mux"
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/exporters/otlp"
@@ -125,7 +125,7 @@ func main() {
 	fmt.Printf("Starting server on http://localhost:8081\n")
 	r := mux.NewRouter()
 	// re-enable once the new version of otel-go and otel-go-contrib is released
-	// r.Use(muxtrace.Middleware(componentName))
+	r.Use(muxtrace.Middleware(componentName))
 	r.HandleFunc("/content/{length:[0-9]+}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		length, err := strconv.Atoi(vars["length"])
