@@ -5,6 +5,8 @@ def start_span_operation(tracer):
     if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
         return tracer.start_as_current_span
     else:
+        from ddtrace import tracer
+
         return tracer.trace
 
 
