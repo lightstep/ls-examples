@@ -1,6 +1,4 @@
 receivers:
-    opencensus:
-      endpoint: "0.0.0.0:55678"
     otlp:
       protocols:
           grpc:
@@ -36,11 +34,11 @@ processors:
 service:
     pipelines:
       traces:
-        receivers: [opencensus, otlp]
+        receivers: [otlp]
         # when a satellite with OTLP configured is available
         exporters: [logging, otlp]
         # exporters: [logging, lightstep]
         processors: [batch]
       metrics:
-        receivers: [opencensus, otlp]
+        receivers: [otlp]
         exporters: [logging]

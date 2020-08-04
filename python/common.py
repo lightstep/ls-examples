@@ -19,7 +19,7 @@ def get_otlp_exporter():
 
     return OTLPSpanExporter(
         credentials=credentials,
-        endpoint=os.getenv("COLLECTOR_ENDPOINT", "localhost:55678"),
+        endpoint=os.getenv("COLLECTOR_ENDPOINT", "localhost:55680"),
         metadata=(("lightstep-access-token", os.environ.get("LS_ACCESS_TOKEN")),),
     )
 
@@ -80,4 +80,4 @@ def get_ls_tracer():
 def get_tracer():
     if os.environ.get("OPENTELEMETRY_INSTRUMENTATION"):
         return get_otel_tracer()
-    return get_dd_tracer()
+    return get_ls_tracer()
