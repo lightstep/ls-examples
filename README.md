@@ -1,10 +1,3 @@
-# ls-examples
+# Lightstep Examples
 
-## Getting started
-
-```bash
-git clone https://github.com/codeboten/ls-examples && cd ls-examples
-cp example.env .env
-# edit .env file with your access token
-docker-compose up
-```
+The contents of this repo have been migrated to https://github.com/lightstep/opentelemetry-examples

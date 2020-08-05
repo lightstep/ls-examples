@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     environment:
-      - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-server
+      - LIGHTSTEP_COMPONENT_NAME=js-lstrace-server
   js-client:
     container_name: ls-trace-js-client
     build: ./client
@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     environment:
-      - LIGHTSTEP_COMPONENT_NAME=ls-trace-js-client
+      - LIGHTSTEP_COMPONENT_NAME=js-lstrace-client
       - TARGET_URL=http://js-server:8080/ping
 networks:
   demo:
