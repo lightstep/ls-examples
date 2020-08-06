@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   js-server:
-    container_name: js-server
+    container_name: ls-trace-js-server
     build: ./server
     networks:
       - demo
@@ -10,12 +10,12 @@ services:
     environment:
       - LIGHTSTEP_COMPONENT_NAME=js-lstrace-server
   js-client:
-    container_name: js-client
+    container_name: ls-trace-js-client
     build: ./client
     networks:
       - demo
     depends_on:
-      - js-server
+      - ls-trace-js-server
     env_file:
       - .env
     environment:
